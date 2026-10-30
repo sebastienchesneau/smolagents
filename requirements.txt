@@ -1,0 +1,6 @@
+smolagents>=1.26.0
+python-dotenv>=1.0
+# Un backend LLM au choix (décommentez selon votre fournisseur) :
+# openai>=1.0          # pour OpenAIServerModel (OPENAI_API_KEY)
+# huggingface_hub      # pour InferenceClientModel (HF_TOKEN)
+# litellm              # pour LiteLLMModel (ex. Anthropic, Mistral, etc.)
