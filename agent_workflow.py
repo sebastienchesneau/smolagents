@@ -97,7 +97,7 @@ def write_file(path: str, content: str) -> str:
 # --------------------------------------------------------------------------- #
 
 
-def build_model():
+def build_model(openai_extra: dict | None = None):
     """Construit un modèle smolagents à partir des variables d'environnement.
 
     Ordre de préférence :
@@ -105,12 +105,17 @@ def build_model():
         2. HF_TOKEN / HF_API_KEY -> InferenceClientModel (HF_MODEL, def. Qwen2.5-Coder)
         3. LITELLM_MODEL         -> LiteLLMModel (ex. anthropic/claude-sonnet-4-6)
 
+    Args:
+        openai_extra: paramètres de génération additionnels transmis uniquement
+            au backend OpenAI (ex. {"reasoning_effort": "none"} requis par
+            gpt-5.6-terra en mode tool-calling sur /v1/chat/completions).
+
     Lève une RuntimeError explicite si aucune clé n'est disponible.
     """
     if os.getenv("OPENAI_API_KEY"):
         model_id = os.getenv("OPENAI_MODEL", "gpt-5.6-terra")
         print(f"[model] OpenAIServerModel : {model_id}")
-        return OpenAIServerModel(model_id=model_id)
+        return OpenAIServerModel(model_id=model_id, **(openai_extra or {}))
 
     if os.getenv("HF_TOKEN") or os.getenv("HF_API_KEY"):
         model_id = os.getenv("HF_MODEL", "Qwen/Qwen2.5-Coder-32B-Instruct")

@@ -18,7 +18,8 @@ le workflow suivant :
 
 | Fichier | Rôle |
 |---|---|
-| `agent_workflow.py` | L'agent (`CodeAgent`) + ses outils + la sélection du modèle. **C'est le fichier principal.** |
+| `agent_workflow.py` | Variante 1 — agent **`CodeAgent`** (l'agent écrit du code Python). **Fichier principal.** |
+| `agent_workflow2.py` | Variante 2 — agent **`ToolCallingAgent`** (paradigme agentique *tool-calling* : appels d'outils JSON). |
 | `prompts/` | Un prompt détaillé par étape, chargé à l'exécution : `summary.md`, `action_points.md`, `translation.md`. |
 | `transcript_fr.txt` | Transcript d'exemple (réunion de lancement, en français). |
 | `delivery/` | Dossier des livrables : **un fichier par sortie** (voir ci-dessous). |
@@ -47,9 +48,22 @@ export HF_MODEL="Qwen/Qwen2.5-Coder-32B-Instruct"   # optionnel
 export LITELLM_MODEL="anthropic/claude-sonnet-4-6"
 export ANTHROPIC_API_KEY="sk-ant-..."
 
-python agent_workflow.py                 # utilise transcript_fr.txt
+python agent_workflow.py                 # variante 1 (CodeAgent)
 python agent_workflow.py mon_transcript.txt
+python agent_workflow2.py                # variante 2 (ToolCallingAgent)
 ```
+
+### Deux variantes d'agent
+
+| | `agent_workflow.py` | `agent_workflow2.py` |
+|---|---|---|
+| Classe | `CodeAgent` | `ToolCallingAgent` |
+| Paradigme | l'agent **écrit du code Python** qui appelle les outils | l'agent **appelle les outils** via des appels de fonction (JSON) |
+| Mêmes outils / prompts / livrables | oui | oui (réutilisés depuis `agent_workflow.py`) |
+
+> Note `gpt-5.6-terra` : en mode tool-calling sur `/v1/chat/completions`, l'API
+> exige `reasoning_effort='none'` — `agent_workflow2.py` le passe automatiquement
+> au modèle.
 
 L'agent écrit **quatre fichiers distincts** dans `delivery/` :
 
