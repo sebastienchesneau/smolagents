@@ -7,23 +7,28 @@ Guide pour toute session Claude Code travaillant sur ce dépôt.
 Un agent construit avec **smolagents** (Hugging Face) qui, à partir d'un
 transcript de réunion **en français**, produit quatre livrables :
 résumé FR, points d'action FR, puis leurs traductions anglaises. Chaque livrable
-est un **fichier Markdown distinct** dans `delivery/`.
+est un **fichier Markdown distinct**, écrit dans le dossier propre à la variante.
 
 ## Architecture
 
-- **`agent_workflow.py`** — point d'entrée unique. Contient :
+- **`base.py`** — socle commun à toutes les variantes :
   - 3 outils `@tool` : `load_prompt`, `read_transcript`, `write_file` ;
-  - `build_model()` — choisit le backend LLM selon les variables d'env ;
-  - `TASK_TEMPLATE` — prompt maître qui orchestre le workflow par étapes ;
-  - `DELIVERABLES` — les 4 fichiers attendus, vérifiés en fin de `main()` ;
-  - `build_agent()` / `main()`.
+  - `build_model(openai_extra=None)` — choisit le backend LLM selon l'env ;
+  - `DELIVERABLES` — les 4 fichiers attendus ;
+  - `run_workflow(agent_factory, task_template, *, label, default_output_dir,
+    openai_extra=None)` — boucle commune : chemins, modèle, `agent.run`, puis
+    vérification des 4 livrables.
+- **Trois variantes** (chacune = prompt + `build_agent` + `main`, tout le reste
+  vient de `base.py`) :
+  - `agent_workflow.py` — `CodeAgent` (le LLM écrit du code) → `delivery/v1_codeagent/`
+  - `agent_workflow2.py` — `ToolCallingAgent` (appels d'outils JSON) → `delivery/v2_toolcalling/`
+  - `agent_workflow3.py` — **multi-agent** : manager + `summarizer` /
+    `action_extractor` / `translator` (`managed_agents`) → `delivery/v3_multiagent/`
 - **`prompts/`** — un prompt détaillé **par étape**, chargé à l'exécution par
-  l'outil `load_prompt("<étape>")` :
-  - `summary.md` → résumé FR → `delivery/resume_fr.md`
-  - `action_points.md` → points d'action FR → `delivery/points_action_fr.md`
-  - `translation.md` → traductions EN → `delivery/summary_en.md` + `delivery/action_items_en.md`
+  l'outil `load_prompt("<étape>")` : `summary.md`, `action_points.md`,
+  `translation.md`.
 - **`transcript_fr.txt`** — transcript d'exemple (réunion « Portail Client v2 »).
-- **`delivery/`** — sortie générée (les 4 `.md`).
+- **`delivery/`** — sorties générées, **un sous-dossier par variante**.
 - **`.env`** — `OPENAI_API_KEY` + `OPENAI_MODEL` (ignoré par git).
 
 ### Principe clé
@@ -44,9 +49,11 @@ son fichier dans `prompts/` — **pas besoin de toucher au code Python**.
 
 ```bash
 cd /home/sebastien.chesneau/workspace_test/smolagents
-python3 agent_workflow.py                 # transcript_fr.txt -> delivery/
+python3 agent_workflow.py                 # v1 CodeAgent    -> delivery/v1_codeagent/
+python3 agent_workflow2.py                # v2 ToolCalling  -> delivery/v2_toolcalling/
+python3 agent_workflow3.py                # v3 multi-agent  -> delivery/v3_multiagent/
 python3 agent_workflow.py autre.txt       # autre transcript
-OUTPUT_DIR=livrables python3 agent_workflow.py
+OUTPUT_DIR=livrables python3 agent_workflow.py   # surcharge le dossier de sortie
 ```
 
 Codes de sortie : `0` OK · `1` transcript introuvable · `2` aucun backend LLM

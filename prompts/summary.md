@@ -17,3 +17,9 @@ Consignes de forme :
 
 Règle absolue : reste strictement factuel. N'ajoute, n'extrapole et n'invente
 aucune information qui ne figure pas explicitement dans le transcript.
+
+Règle anti-méta (TRÈS IMPORTANT) : le résumé doit porter sur le CONTENU RÉEL de
+la réunion — les personnes, ce qu'elles ont dit, les décisions, les chiffres. Ne
+décris JAMAIS la consigne elle-même, ni le fait que « le transcript a été lu »
+ou « doit être résumé ». Écris directement le résumé du fond. Un bon résumé cite
+des éléments concrets du transcript (noms, sujets, décisions, délais).

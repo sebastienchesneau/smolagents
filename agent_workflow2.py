@@ -1,39 +1,25 @@
 #!/usr/bin/env python3
-"""Variante 2 de l'agent : basée sur le paradigme AGENTIQUE « tool-calling ».
+"""Variante 2 — agent basé sur le `ToolCallingAgent` de smolagents.
 
-Même workflow et mêmes livrables que `agent_workflow.py`, mais l'agent n'écrit
-PLUS de code Python : il utilise un `ToolCallingAgent` qui appelle les outils via
-des appels de fonction structurés (JSON), un par étape.
+PARADIGME : le LLM N'ÉCRIT PAS de code ; il émet des APPELS D'OUTILS structurés
+(function calling, en JSON), un appel à la fois.
 
-    read_transcript -> load_prompt -> write_file (x4)
+Tout le reste (outils, choix du modèle, boucle d'exécution, vérification des
+livrables) vit dans `base.py`. Ce fichier ne contient que ce qui est PROPRE à la
+variante ToolCallingAgent : la classe d'agent, la formulation de la tâche, et le
+paramètre `reasoning_effort='none'` exigé par gpt-5.6-terra en tool-calling.
 
-Les outils, la sélection du modèle et la liste des livrables sont réutilisés tels
-quels depuis `agent_workflow.py` (source unique de vérité).
-
-Utilisation :
-    python agent_workflow2.py                      # transcript_fr.txt par défaut
-    python agent_workflow2.py chemin/vers/transcript.txt
+    python agent_workflow2.py [chemin/vers/transcript.txt]
 """
 
 from __future__ import annotations
 
-import os
-import sys
-
 from smolagents import ToolCallingAgent
 
-from agent_workflow import (
-    DELIVERABLES,
-    build_model,
-    load_prompt,
-    read_transcript,
-    write_file,
-)
+from base import load_prompt, read_transcript, run_workflow, write_file
 
-# --------------------------------------------------------------------------- #
-# Tâche — formulée pour un agent tool-calling (pas de bloc de code)
-# --------------------------------------------------------------------------- #
-
+# Prompt propre au ToolCallingAgent : on raisonne en « appels d'outils », pas en
+# code. Le contenu rédigé est passé en argument `content` de `write_file`.
 TASK_TEMPLATE = """\
 Tu es un assistant qui traite le compte rendu d'une réunion.
 
@@ -75,7 +61,7 @@ N'invente aucune information qui ne figure pas dans le transcript.
 
 
 def build_agent(model) -> ToolCallingAgent:
-    """Crée le ToolCallingAgent (paradigme tool-calling) avec les outils."""
+    """Spécificité de la variante : un ToolCallingAgent (appels d'outils JSON)."""
     return ToolCallingAgent(
         tools=[load_prompt, read_transcript, write_file],
         model=model,
@@ -84,52 +70,15 @@ def build_agent(model) -> ToolCallingAgent:
 
 
 def main() -> int:
-    transcript_path = os.path.abspath(
-        sys.argv[1] if len(sys.argv) > 1 else "transcript_fr.txt"
+    # gpt-5.6-terra exige reasoning_effort='none' avec des function tools sur
+    # /v1/chat/completions (sinon erreur 400).
+    return run_workflow(
+        build_agent,
+        TASK_TEMPLATE,
+        label="ToolCallingAgent",
+        default_output_dir="delivery/v2_toolcalling",
+        openai_extra={"reasoning_effort": "none"},
     )
-    output_dir = os.path.abspath(os.getenv("OUTPUT_DIR", "delivery"))
-
-    if not os.path.exists(transcript_path):
-        print(f"Transcript introuvable : {transcript_path}", file=sys.stderr)
-        return 1
-
-    try:
-        # gpt-5.6-terra exige reasoning_effort='none' avec des function tools
-        # sur /v1/chat/completions (sinon erreur 400).
-        model = build_model(openai_extra={"reasoning_effort": "none"})
-    except RuntimeError as exc:
-        print(str(exc), file=sys.stderr)
-        return 2
-
-    agent = build_agent(model)
-    task = TASK_TEMPLATE.format(
-        transcript_path=transcript_path, output_dir=output_dir
-    )
-
-    result = agent.run(task)
-
-    print("\n" + "=" * 70)
-    print("RAPPORT FINAL (ToolCallingAgent)")
-    print("=" * 70)
-    print(result)
-
-    # Vérification : les quatre livrables ont-ils bien été écrits ?
-    missing = [
-        name
-        for name in DELIVERABLES
-        if not os.path.exists(os.path.join(output_dir, name))
-    ]
-    if missing:
-        print(
-            "\nÉCHEC : fichiers manquants dans "
-            f"{output_dir} -> {', '.join(missing)}\n"
-            "Le modèle n'a pas produit tous les livrables. Relancez la commande.",
-            file=sys.stderr,
-        )
-        return 3
-
-    print(f"\nOK : {len(DELIVERABLES)} fichiers écrits dans {output_dir}")
-    return 0
 
 
 if __name__ == "__main__":
