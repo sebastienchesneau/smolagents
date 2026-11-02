@@ -1,0 +1,8 @@
+# Action Items
+
+- **Claire** : relieve Marc of support duties during the database migration. Due date: during the migration period.
+- **Claire** : notify the legal department about the approval of the online payment provider. Due date: today.
+- **Julien** : prepare a comparison of three online payment solutions. Due date: next week.
+- **Marc** : carry out the database migration while being dedicated to this task. Due date: two weeks.
+- **Marc** : send the detailed migration schedule. Due date: Friday.
+- **Sofia** : launch user testing of the mock-ups with a panel of ten customers. Due date: not specified.

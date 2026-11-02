@@ -1,0 +1,25 @@
+Réunion de lancement — Projet "Portail Client v2"
+Date : 28 octobre 2026
+Participants : Claire (cheffe de projet), Marc (développeur backend), Sofia (designer UX), Julien (responsable commercial)
+
+Claire : Bonjour à tous, merci d'être là. L'objectif de ce matin, c'est de cadrer la refonte du portail client. On a trois mois devant nous, donc il faut qu'on soit efficaces. Marc, tu peux nous faire un point sur l'existant ?
+
+Marc : Oui. Le portail actuel tourne sur une vieille version du framework, on a beaucoup de dette technique. Les temps de chargement dépassent les quatre secondes sur la page de facturation, c'est le principal point noir remonté par le support. Je pense qu'il faut prioriser la migration de la base de données avant toute chose, sinon on va reconstruire sur du sable.
+
+Sofia : Côté design, j'ai fait une analyse des retours utilisateurs du dernier trimestre. Le gros problème, c'est la navigation : les clients ne trouvent pas leurs factures, et le parcours de réclamation est confus. J'aimerais qu'on refasse complètement l'arborescence et qu'on teste les maquettes avec un panel de dix clients avant de développer.
+
+Julien : Pour moi, la priorité commerciale c'est d'intégrer le paiement en ligne. On perd des clients parce qu'ils doivent appeler pour régler. Si on pouvait livrer ça pour la fin du premier mois, ça aurait un impact direct sur le chiffre.
+
+Claire : D'accord, mais on ne peut pas tout faire en même temps. Marc, combien de temps pour la migration de la base ?
+
+Marc : Deux semaines si je suis dédié dessus, trois si je dois gérer le support en parallèle. Je propose qu'on me décharge du support pendant cette période.
+
+Claire : Ça me paraît raisonnable. Sofia, tu peux lancer les tests utilisateurs en parallèle de la migration ?
+
+Sofia : Oui, mais il me faut une validation du budget pour recruter le panel. On parle d'environ mille cinq cents euros.
+
+Claire : Je valide le budget du panel. Julien, pour le paiement en ligne, il faut qu'on choisisse un prestataire. Tu peux nous préparer un comparatif de trois solutions pour la semaine prochaine ?
+
+Julien : Pas de souci, je prépare ça. Il faudra aussi penser à la conformité, le service juridique voudra valider le prestataire.
+
+Claire : Bon point. Je préviens le juridique dès aujourd'hui. On se cale un point hebdomadaire tous les mardis à dix heures. Marc, tu nous enverras un planning détaillé de la migration d'ici vendredi. Dernière chose : on garde le périmètre serré, pas de nouvelle fonctionnalité non prévue sans mon accord. Merci à tous, bonne journée.
