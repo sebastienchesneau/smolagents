@@ -18,6 +18,10 @@ from __future__ import annotations
 
 from llama_index.core.agent.workflow import ReActAgent
 
+# --- bootstrap : racine du dépôt importable (base.py / base_tools.py y restent) ---
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
 from base_llamaindex import TOOLS, build_llm, run_llamaindex_workflow
 
 

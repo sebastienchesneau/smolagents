@@ -28,6 +28,10 @@ load_dotenv()
 from llama_index.core.tools import FunctionTool
 from llama_index.llms.openai_like import OpenAILike
 
+# --- bootstrap : racine du dépôt importable (base.py / base_tools.py y restent) ---
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
 from base_tools import (
     TASK_TEMPLATE,
     load_prompt,

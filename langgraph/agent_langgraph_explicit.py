@@ -43,6 +43,10 @@ from langgraph.graph import END, START, MessagesState, StateGraph
 from langgraph.prebuilt import ToolNode, tools_condition
 
 # On réutilise les outils et la construction du modèle de la variante prebuilt.
+# --- bootstrap : racine du dépôt importable (base.py / base_tools.py y restent) ---
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
 from agent_langgraph import TOOLS, build_llm
 from base_tools import TASK_TEMPLATE, resolve_io, verify_deliverables
 

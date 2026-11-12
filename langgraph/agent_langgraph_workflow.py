@@ -31,6 +31,10 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from langgraph.graph import END, START, StateGraph
 
+# --- bootstrap : racine du dépôt importable (base.py / base_tools.py y restent) ---
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
 from base_tools import (
     load_prompt,
     read_transcript,

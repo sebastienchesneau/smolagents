@@ -15,6 +15,10 @@ from __future__ import annotations
 
 from smolagents import CodeAgent
 
+# --- bootstrap : racine du dépôt importable (base.py / base_tools.py y restent) ---
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
 from base import load_prompt, read_transcript, run_workflow, write_file
 
 # Prompt propre au CodeAgent : on insiste sur « réponds avec un bloc de code ».

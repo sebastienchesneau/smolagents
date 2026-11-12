@@ -16,12 +16,17 @@ le workflow suivant :
 
 ## Fichiers
 
+> **Organisation par techno** : les scripts sont regroupés dans `smolagents/`,
+> `llamaindex/`, `langgraph/`, `vercel-ai/`. L'infra partagée (`base.py`,
+> `base_tools.py`, `prompts/`, `transcript_fr.txt`, `delivery/`) reste à la
+> racine. **Lancer les scripts depuis la racine du dépôt.**
+
 | Fichier | Rôle |
 |---|---|
-| `base.py` | **Socle commun** : outils (`load_prompt`, `read_transcript`, `write_file`), `build_model`, `DELIVERABLES`. Importé par les deux variantes. |
-| `agent_workflow.py` | Variante 1 — agent **`CodeAgent`** (l'agent écrit du code Python). **Fichier principal.** |
-| `agent_workflow2.py` | Variante 2 — agent **`ToolCallingAgent`** (paradigme agentique *tool-calling* : appels d'outils JSON). |
-| `agent_workflow3.py` | Variante 3 — **multi-agent** : un manager délègue à `summarizer`, `action_extractor`, `translator`. |
+| `base.py` | **Socle commun** : outils (`load_prompt`, `read_transcript`, `write_file`), `build_model`, `DELIVERABLES`. Importé par les variantes smolagents. |
+| `smolagents/agent_workflow.py` | Variante 1 — agent **`CodeAgent`** (l'agent écrit du code Python). **Fichier principal.** |
+| `smolagents/agent_workflow2.py` | Variante 2 — agent **`ToolCallingAgent`** (paradigme agentique *tool-calling* : appels d'outils JSON). |
+| `smolagents/agent_workflow3.py` | Variante 3 — **multi-agent** : un manager délègue à `summarizer`, `action_extractor`, `translator`. |
 | `prompts/` | Un prompt détaillé par étape, chargé à l'exécution : `summary.md`, `action_points.md`, `translation.md`. |
 | `transcript_fr.txt` | Transcript d'exemple (réunion de lancement, en français). |
 | `delivery/` | Livrables, **un sous-dossier par variante** (`v1_codeagent/`, `v2_toolcalling/`, `v3_multiagent/`), 4 fichiers chacun. |
@@ -50,10 +55,11 @@ export HF_MODEL="Qwen/Qwen2.5-Coder-32B-Instruct"   # optionnel
 export LITELLM_MODEL="anthropic/claude-sonnet-4-6"
 export ANTHROPIC_API_KEY="sk-ant-..."
 
-python agent_workflow.py                 # variante 1 (CodeAgent)
-python agent_workflow.py mon_transcript.txt
-python agent_workflow2.py                # variante 2 (ToolCallingAgent)
-python agent_workflow3.py                # variante 3 (multi-agent)
+# depuis la racine du dépôt :
+python smolagents/agent_workflow.py                 # variante 1 (CodeAgent)
+python smolagents/agent_workflow.py mon_transcript.txt
+python smolagents/agent_workflow2.py                # variante 2 (ToolCallingAgent)
+python smolagents/agent_workflow3.py                # variante 3 (multi-agent)
 ```
 
 ### Trois variantes d'agent

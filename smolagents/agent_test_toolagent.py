@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 import sys
 from smolagents import ToolCallingAgent, tool
+# --- bootstrap : racine du dépôt importable (base.py / base_tools.py y restent) ---
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
 from base import build_model
 import os
 import shutil
